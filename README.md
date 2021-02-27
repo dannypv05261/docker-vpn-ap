@@ -144,7 +144,7 @@ docker-compose down && docker-compose up
 docker-compose down && docker-compose up -d
 ```
 
-# Adavance: Use multiple AP with different SSID for VPN connected to different Country
+# Use multiple AP with different SSID for VPN connected to different Country
 You can simply copy the existing docker-compose.yml, change the VPN info, and run docker-compose -f docker-compose-tw.yml to specify the config file.
 
 However, for most of the USB with AP, it only supports 1 AP mode. i.e. #{ AP } <= 1.
@@ -163,7 +163,13 @@ iw list
 #                   total <= 4, #channels <= 1
 ```
 
+# Other info: Other docker containers also shared the VPN connection
+You can add that service into the same docker-compose file and add this line to the config of that service: network_mode: service:${your vpn container name}
 
-This project is based on
-https://github.com/offlinehacker/docker-ap
+# Other info: The host machine also want to use VPN connection
+You can simply change the network mode to host in your VPN container by network_mode: host
+
+# Reference
+This project is based on https://github.com/offlinehacker/docker-ap
+
 https://github.com/ilteoood/docker-surfshark
