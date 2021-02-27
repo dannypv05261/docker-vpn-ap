@@ -38,7 +38,6 @@ services:
         - INTERFACE=wlan0
         - OUTGOINGS=tun0,eth0
         - CHANNEL=36
-        - HW_MODE=a
         - WPA_PASSPHRASE=password
         - SSID=docker-ap
         - SUBNET=192.168.2.0
