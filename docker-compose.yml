@@ -1,0 +1,46 @@
+version: "2"
+ 
+services: 
+    # Start: Replace this block with your VPN servie provider
+    # Noted that 'privileged: true' in your VPN config is needed for docker-ap to manipulate AP
+    surfshark:
+        image: ilteoood/docker-surfshark
+        container_name: surfshark
+        environment: 
+            - SURFSHARK_USER=YOUR_USERNAME
+            - SURFSHARK_PASSWORD=YOUR_PASSWORD
+            - SURFSHARK_COUNTRY=jp
+            - SURFSHARK_CITY=tok
+            - CONNECTION_TYPE=udp
+            - LAN_NETWORK=192.168.1.0/24
+        cap_add: 
+            - NET_ADMIN
+        devices:
+            - /dev/net/tun
+        privileged: true
+        restart: unless-stopped
+    # End:: Replace this block with your VPN servie provider
+    docker-ap:
+      build:
+        context: docker-ap
+        dockerfile: Dockerfile
+      container_name: docker-ap
+      image: dokcer-ap
+      restart: unless-stopped
+      privileged: true
+      depends_on: 
+        surfshark:
+          condition: service_healthy
+      network_mode: service:surfshark
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock 
+      environment:
+        - INTERFACE=wlan0
+        - OUTGOINGS=tun0,eth0
+        - CHANNEL=36
+        - HW_MODE=a
+        - WPA_PASSPHRASE=password
+        - SSID=docker-ap
+        - SUBNET=192.168.2.0
+        - AP_ADDR=192.168.2.1
+        - DNS_ADDRESSES=192.168.1.1

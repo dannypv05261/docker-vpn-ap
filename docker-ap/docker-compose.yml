@@ -1,0 +1,23 @@
+version: "2"
+
+services: 
+    ap:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: ap
+      image: ap
+      restart: unless-stopped
+      privileged: true
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock 
+      environment:
+        - INTERFACE=wlan0
+        - OUTGOINGS=eth0
+        - CHANNEL=36
+        - HW_MODE=a
+        - WPA_PASSPHRASE=password1234
+        - SSID=good
+        - MODE=guest
+        - SUBNET=192.168.2.0
+        - AP_ADDR=192.168.2.1
