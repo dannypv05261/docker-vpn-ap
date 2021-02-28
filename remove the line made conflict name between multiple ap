@@ -34,10 +34,7 @@ else
   echo "${INTERFACE} Attached"
 fi
 
-ip link set ${INTERFACE} name wlan0
-
-INTERFACE=wlan0
-
+ip link set ${INTERFACE} name ${INTERFACE}
 
 if [ ! -f "/etc/hostapd.conf" ] ; then
     cat > "/etc/hostapd.conf" <<EOF
