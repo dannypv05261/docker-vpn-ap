@@ -11,10 +11,28 @@ This project can provide these nice features:
 
 It can be run for Linux device. I tested it in 64 bit Raspbian & Ubuntu
 
-Noted that for your raspberry pi 4B which runs Raspbain, the driver of the default WiFi chip has some issue right now for AP mode. You need to apply the patch.
+Noted that for your raspberry pi 4B which runs Raspbain, the driver of the default WiFi chip has some issue right now for AP mode. You need to apply the patch the WiFi driver:
 https://github.com/raspberrypi/linux/issues/3619
 
-## Step 1: Make sure you have one network interface for the Internet connection & another network interface for AP
+## To setup your own VPN AP:
+```
+git clone https://github.com/dannypv05261/docker-vpn-ap.git
+
+# replace 'surfshark' service with your own vpn service and make sure 'privileged': true is added to that service
+# replace AP info: DRIVER, INTERFACE, WPA_PASSPHRASE, SSID, etc
+vim docker-compose.yml
+
+# Make sure hostapd config is fit for your WiFi chips
+vim dokcer/startwlan.sh
+
+docker-compose build
+docker-compose up
+```
+
+If you can't catch up the above steps. Please try to flow the step-by-step tutorial below.
+
+## Step by Step tutorial:
+### Step 1: Make sure you have one network interface for the Internet connection & another network interface for AP
 
 You can check your network interface with this command
 ```
@@ -45,7 +63,7 @@ iw list
 ```
 
 
-## Step 2: Prepare your own VPN docker images
+### Step 2: Prepare your own VPN docker images
 In my example, I use surfshark in docker-compose.yml. 
 You need to create your own docker-compose.yml according to your VPN docker image chosen.
 Noted that 'privileged: true' in your VPN config is needed for AP container to manipulate the AP device and AP container will depend on your VPN container. Please add it if the config you choose is missing it.
@@ -76,7 +94,7 @@ Run your VPN container and make sure it is healthy
 docker-compose up
 ```
 
-## Step 3: Check VPN tunnel interface in the VPN container
+### Step 3: Check VPN tunnel interface in the VPN container
 Assume your VPN container is running sucessfully. You need to make sure tunnel interface (e.g. tun0) can be found
 ```sh
 # find your docker container ID
@@ -93,7 +111,7 @@ docker exec cc858c03c241 ifconfig
 #          RX bytes:1866210 (1.7 MiB)  TX bytes:1063854 (1.0 MiB)
 ```
 
-## Step 4: Enable IP forwarding in your host machine
+### Step 4: Enable IP forwarding in your host machine
 ```
 # For Rasbian & Ubuntu
 
@@ -105,7 +123,7 @@ sysctl net.ipv4.ip_forward
 sysctl -w net.ipv4.ip_forward=1
 ```
 
-## Step 5: Add AP config to your docker-compose.yml
+### Step 5: Add AP config to your docker-compose.yml
 I don't want to publish the docker images, so you need to download the whole docker-ap folder and place the folder next to your docker-compose.yml
 
 Now edit your docker-compose.yml and parse the following infor into it
@@ -138,7 +156,7 @@ You need to add 'network_mode' and 'depends_on' point to your VPN container
 
 Noted that the current AP config is based on 802.11ac. If you want to use 802.11n, you can refer to https://github.com/offlinehacker/docker-ap and change hostapd config based on his wlanstart.sh file
 
-# Step 6: Start the service and connect to your SSID after AP container is healthy
+### Step 6: Start the service and connect to your SSID after AP container is healthy
 ```
 docker-compose down && docker-compose up
 docker-compose down && docker-compose up -d
