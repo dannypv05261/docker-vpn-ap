@@ -25,6 +25,9 @@ vim docker-compose.yml
 # Make sure hostapd config is fit for your WiFi chips
 vim dokcer/startwlan.sh
 
+# Enable IP forwarding for AP
+sysctl -w net.ipv4.ip_forward=1
+
 docker-compose build
 docker-compose up
 ```
