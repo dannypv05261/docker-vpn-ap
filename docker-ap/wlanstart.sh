@@ -20,6 +20,14 @@ true ${DNS_ADDRESSES=1.1.1.1,1.0.0.1}
 # Attach interface to container
 echo "Attaching interface to container"
 CONTAINER_ID=$(cat /proc/self/cgroup | grep -o  -e "/docker/.*" | head -n 1| sed "s/\/docker\/\(.*\)/\\1/")
+if [ -z "${CONTAINER_ID}" ]; then
+  echo "Cannot find CONTAINER_ID with default cgroup. Find it with systemd cgroup instead"
+  CONTAINER_ID=$(ls -it /sys/fs/cgroup/systemd/system.slice | grep -o  -e "docker-.*.scope" | head -n 1  | sed -e "s/^docker-//" -e "s/.scope$//")
+fi
+if [ -z "${CONTAINER_ID}" ]; then
+  echo "[Error] Not find this Docker container"
+  exit 1
+fi
 CONTAINER_PID=$(docker inspect -f '{{.State.Pid}}' ${CONTAINER_ID})
 CONTAINER_IMAGE=$(docker inspect -f '{{.Config.Image}}' ${CONTAINER_ID})
 
