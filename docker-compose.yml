@@ -33,7 +33,8 @@ services:
           condition: service_healthy
       network_mode: service:surfshark
       volumes:
-        - /var/run/docker.sock:/var/run/docker.sock 
+        - /var/run/docker.sock:/var/run/docker.sock
+        - /sys/fs/cgroup/systemd:/sys/fs/cgroup/systemd
       environment:
         - INTERFACE=wlan0
         - OUTGOINGS=tun0,eth0
