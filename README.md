@@ -145,7 +145,8 @@ You need to add 'network_mode' and 'depends_on' point to your VPN container
           condition: service_healthy #Make sure the AP container starts after your VPN container becomes healthy
       network_mode: service:surfshark   # You need to edit this link to your VPN container service name
       volumes:
-        - /var/run/docker.sock:/var/run/docker.sock 
+        - /var/run/docker.sock:/var/run/docker.sock
+        - /sys/fs/cgroup/systemd:/sys/fs/cgroup/systemd
       environment:
         - INTERFACE=wlan0 # the interface name for AP
         - OUTGOINGS=tun0,eth0  #tun0 is for Internet access via VPN and eth0 is for LAN access. You can remove 'eth0' if you don't want the device connected to the AP can access your LAN network
