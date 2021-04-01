@@ -9,10 +9,7 @@ This project can provide these nice features:
 - Support DNS config for the AP. Can be integrate with DNS servers, like Pi-hole, AdGuard, etc
 - Allow to enable / disable local network connection
 
-It can be run for Linux device. I tested it in 64 bit Raspbian & Ubuntu
-
-Noted that for your raspberry pi 4B which runs Raspbain, the driver of the default WiFi chip has some issue right now for AP mode. You need to apply the patch the WiFi driver:
-https://github.com/raspberrypi/linux/issues/3619
+It can be run for Linux device. I tested it in 64 bit Raspbian & Ubuntu.
 
 ## To setup your own VPN AP:
 ```
