@@ -25,6 +25,10 @@ if [ -z "${CONTAINER_ID}" ]; then
   CONTAINER_ID=$(ls -it /sys/fs/cgroup/systemd/system.slice | grep -o  -e "docker-.*.scope" | head -n 1  | sed -e "s/^docker-//" -e "s/.scope$//")
 fi
 if [ -z "${CONTAINER_ID}" ]; then
+  OVERLAY_ID=`cat /proc/self/mountinfo | grep -i overlay | sed -n "s/.\+upperdir\\=\\(.\+\\)\\/diff.\+/\1/p"`
+  CONTAINER_ID=`docker inspect -f $'{{.ID}}\t{{.Name}}\t{{.GraphDriver.Data.MergedDir}}' $(docker ps -aq) | grep $OVERLAY_ID | sed -n "s/\t\+.\+//p"`
+fi
+if [ -z "${CONTAINER_ID}" ]; then
   echo "[Error] Not find this Docker container"
   exit 1
 fi
